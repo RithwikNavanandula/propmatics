@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Propmatics - Real Estate Solutions{% endblock %}
+
+{% block content %}
+<!-- Hero Section - Unique Design with Wave -->
+<section
+    class="relative bg-gradient-to-br from-emerald-700 via-teal-600 to-cyan-700 text-white pt-16 pb-32 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" />
+                </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#grid)" />
+        </svg>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 text-center">
+        <span
+            class="inline-block bg-white/20 text-white px-4 py-1 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
+            🏠 Trusted by 500+ Happy Customers
+        </span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            Discover Your <br class="hidden md:block" />Perfect Property
+        </h1>
+        <p class="text-lg md:text-xl mb-10 opacity-90 max-w-2xl mx-auto">
+            From dream homes to investment opportunities - find it all with Propmatics
+        </p>
+
+        <!-- Search Bar - Modern Card Style -->
+        <form action="{% url 'search' %}" method="GET" class="max-w-3xl mx-auto">
+            <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
+                <div class="flex-grow relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" name="q" placeholder="Search by location, property type..."
+                        class="w-full pl-12 pr-4 py-4 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
+                </div>
+                <button type="submit"
+                    class="bg-emerald-600 px-8 py-4 text-white rounded-xl hover:bg-emerald-700 transition font-semibold whitespace-nowrap">
+                    Find Property
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Wave SVG -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+                fill="#f9fafb" />
+        </svg>
+    </div>
+</section>
+
+<!-- Stats Section - Unique -->
+<section class="py-8 -mt-8 relative z-10">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="bg-white rounded-2xl shadow-xl p-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div class="p-3">
+                <p class="text-3xl font-bold text-emerald-600">500+</p>
+                <p class="text-gray-500 text-sm">Properties Listed</p>
+            </div>
+            <div class="p-3 border-l border-gray-100">
+                <p class="text-3xl font-bold text-emerald-600">350+</p>
+                <p class="text-gray-500 text-sm">Happy Customers</p>
+            </div>
+            <div class="p-3 border-l border-gray-100">
+                <p class="text-3xl font-bold text-emerald-600">50+</p>
+                <p class="text-gray-500 text-sm">Cities Covered</p>
+            </div>
+            <div class="p-3 border-l border-gray-100">
+                <p class="text-3xl font-bold text-emerald-600">100%</p>
+                <p class="text-gray-500 text-sm">Verified Listings</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties - Card Style -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800">Featured Properties</h2>
+                <p class="text-gray-500 mt-2">Hand-picked premium listings just for you</p>
+            </div>
+            <a href="{% url 'property_list' %}"
+                class="mt-4 md:mt-0 text-emerald-600 hover:text-emerald-700 font-medium flex items-center">
+                View All <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+
+        {% if featured_properties %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for property in featured_properties %}
+            <a href="{{ property.get_absolute_url }}"
+                class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+                <div class="h-56 bg-gray-200 relative overflow-hidden">
+                    {% if property.image %}
+                    <img src="{{ property.image.url }}" alt="{{ property.title }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    {% else %}
+                    <div
+                        class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100">
+                        <i class="fas fa-building text-5xl text-emerald-300"></i>
+                    </div>
+                    {% endif %}
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold shadow-lg">
+                            ⭐ Featured
+                        </span>
+                    </div>
+                    <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow">
+                        <p class="text-emerald-700 font-bold text-lg">₹{{ property.price|floatformat:0 }}</p>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3
+                        class="font-bold text-lg mb-2 text-gray-800 group-hover:text-emerald-600 transition line-clamp-1">
+                        {{ property.title }}</h3>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <i class="fas fa-map-marker-alt mr-2 text-emerald-500"></i>
+                        <span>{{ property.city }}{% if property.location %}, {{ property.location }}{% endif %}</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-sm">
+                        <span class="text-gray-400">{{ property.get_property_type_display }}</span>
+                        <span class="text-emerald-600 font-medium flex items-center">
+                            View Details <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-gray-500 py-12">No featured properties yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Why Choose Us - Unique Cards -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-14">
+            <span class="text-emerald-600 font-semibold text-sm uppercase tracking-wider">Why Propmatics</span>
+            <h2 class="text-3xl font-bold text-gray-800 mt-2">Complete Real Estate Solutions</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
+                class="relative bg-gradient-to-br from-emerald-50 to-teal-50 p-8 rounded-2xl border border-emerald-100 hover:shadow-lg transition group">
+                <div
+                    class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition">
+                    <i class="fas fa-home text-2xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Buy Property</h3>
+                <p class="text-gray-600 leading-relaxed">Browse thousands of verified properties with transparent
+                    pricing and detailed information.</p>
+            </div>
+            <div
+                class="relative bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border border-teal-100 hover:shadow-lg transition group">
+                <div
+                    class="w-14 h-14 bg-teal-600 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition">
+                    <i class="fas fa-hand-holding-usd text-2xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Sell Property</h3>
+                <p class="text-gray-600 leading-relaxed">List your property and connect with genuine buyers. Get the
+                    best value for your asset.</p>
+            </div>
+            <div
+                class="relative bg-gradient-to-br from-cyan-50 to-sky-50 p-8 rounded-2xl border border-cyan-100 hover:shadow-lg transition group">
+                <div
+                    class="w-14 h-14 bg-cyan-600 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition">
+                    <i class="fas fa-file-signature text-2xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-800">Documentation</h3>
+                <p class="text-gray-600 leading-relaxed">Expert assistance for property registration, legal
+                    verification, and documentation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Notifications -->
+{% if notifications %}
+<section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">📢 Latest Updates</h2>
+        </div>
+        <div class="bg-white rounded-2xl shadow-md divide-y divide-gray-100">
+            {% for notification in notifications %}
+            <div class="p-5 flex justify-between items-center hover:bg-gray-50 transition">
+                <div>
+                    <span class="text-emerald-600 text-sm font-medium">{{ notification.date }}</span>
+                    <p class="font-semibold text-gray-800 mt-1">{{ notification.title }}</p>
+                </div>
+                {% if notification.document %}
+                <a href="{{ notification.document.url }}"
+                    class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-200 transition font-medium text-sm"
+                    target="_blank">
+                    <i class="fas fa-download mr-2"></i>Download
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section - Unique Design -->
+<section class="py-20 bg-gradient-to-r from-emerald-700 via-teal-600 to-cyan-700 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="10" cy="10" r="30" fill="white" />
+            <circle cx="90" cy="90" r="40" fill="white" />
+        </svg>
+    </div>
+    <div class="relative max-w-4xl mx-auto px-4 text-center text-white">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Find Your Dream Property?</h2>
+        <p class="text-lg mb-8 opacity-90">Join thousands of happy homeowners who found their perfect space with us</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'property_list' %}"
+                class="bg-white text-emerald-700 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition shadow-xl">
+                Browse Properties
+            </a>
+            <a href="{% url 'post_property' %}"
+                class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition">
+                Post Your Property
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

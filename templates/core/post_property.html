@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Property - Propmatics{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8 text-center">Post Your Property</h1>
+
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Contact Info Section -->
+            <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Contact Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-gray-600 mb-2">Your Name *</label>
+                    <input type="text" name="contact_name" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Email *</label>
+                    <input type="email" name="contact_email" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Phone *</label>
+                    <input type="tel" name="contact_phone" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">You are *</label>
+                    <select name="user_type" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select...</option>
+                        <option value="Buyer">Buyer</option>
+                        <option value="Seller">Seller</option>
+                        <option value="Agent">Agent</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Property Details Section -->
+            <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Property Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-gray-600 mb-2">Property Title *</label>
+                    <input type="text" name="title" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Property Type *</label>
+                    <select name="property_type" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select...</option>
+                        <option value="independent_villa">Independent Villa</option>
+                        <option value="standalone_apartment">Standalone Apartment</option>
+                        <option value="towers">Towers</option>
+                        <option value="gated_community">Gated Community</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Developer</label>
+                    <select name="developer"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select Developer...</option>
+                        {% for dev in developers %}
+                        <option value="{{ dev.id }}">{{ dev.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">City *</label>
+                    <input type="text" name="city" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Location/Area</label>
+                    <input type="text" name="location"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Price (₹) *</label>
+                    <input type="number" name="price" required
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Carpet Area (sq.ft)</label>
+                    <input type="number" name="carpet_area"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Floor Number</label>
+                    <input type="number" name="floor_number"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Total Floors</label>
+                    <input type="number" name="total_floors"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Possession Date</label>
+                    <input type="date" name="possession_date" max="2024-12-31"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Loan Approved By</label>
+                    <select name="loan_approved_by"
+                        class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select...</option>
+                        <option value="sbi">State Bank Of India</option>
+                        <option value="pnb">Punjab National Bank</option>
+                        <option value="icici">ICICI Bank</option>
+                        <option value="hdfc">HDFC Bank</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <label class="block text-gray-600 mb-2">Description</label>
+                <textarea name="description" rows="4"
+                    class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-6">
+                <label class="block text-gray-600 mb-2">Property Image *</label>
+                <input type="file" name="image" accept="image/*" required
+                    class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-green-600 text-white py-4 rounded-lg hover:opacity-90 transition font-semibold text-lg">
+                Submit Property
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
