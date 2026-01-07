@@ -3,35 +3,40 @@
 {% block title %}Blog - Propmatics{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8 text-gray-800">Blog</h1>
+<div class="max-w-6xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Blog & News</h1>
 
     {% if blogs %}
-    <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for blog in blogs %}
-        <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
-            <div class="md:flex">
-                {% if blog.image %}
-                <div class="md:w-1/3">
-                    <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="w-full h-48 md:h-full object-cover">
+        <a href="{% url 'blog_detail' blog.slug %}"
+            class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group">
+            <div class="h-48 bg-gray-200 overflow-hidden">
+                {% if blog.image_url %}
+                <img src="{{ blog.image_url }}" alt="{{ blog.title }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                {% else %}
+                <div
+                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100">
+                    <i class="fas fa-newspaper text-4xl text-emerald-300"></i>
                 </div>
                 {% endif %}
-                <div class="p-6 {% if blog.image %}md:w-2/3{% endif %}">
-                    <span class="text-sm text-gray-500">{{ blog.created_at|date:"F d, Y" }}</span>
-                    <h2 class="text-xl font-semibold mt-2 mb-3 text-gray-800">
-                        <a href="{{ blog.get_absolute_url }}" class="hover:text-green-600 transition">{{ blog.title }}</a>
-                    </h2>
-                    <p class="text-gray-600">{{ blog.excerpt|default:blog.content|truncatewords:30 }}</p>
-                    <a href="{{ blog.get_absolute_url }}" class="inline-block mt-4 text-green-600 hover:underline font-medium">
-                        Read More <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
             </div>
-        </article>
+            <div class="p-5">
+                <span class="text-emerald-600 text-sm">{{ blog.created_at|slice:":10" }}</span>
+                <h2 class="text-xl font-semibold mt-2 mb-3 text-gray-800 group-hover:text-emerald-600 transition">{{
+                    blog.title }}</h2>
+                <p class="text-gray-500 text-sm line-clamp-2">{{ blog.excerpt|default:blog.content|truncatewords:20 }}
+                </p>
+            </div>
+        </a>
         {% endfor %}
     </div>
     {% else %}
-    <p class="text-center text-gray-500 py-12">No blog posts yet.</p>
+    <div class="text-center py-16">
+        <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+        <p class="text-gray-500 text-lg">No blog posts available yet.</p>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

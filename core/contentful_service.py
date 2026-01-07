@@ -467,3 +467,74 @@ def sync_property_to_contentful(property_instance, developer_id=None):
     except Exception as e:
         logger.error(f"Failed to sync property: {e}")
         return None
+
+
+def submit_property_to_contentful(title, property_type, city, location, price, 
+                                   carpet_area=0, floor_number=0, total_floors=1,
+                                   possession_date='', loan_approved_by='', 
+                                   description='', developer_id=None, image=None):
+    """
+    Submit a new property directly to Contentful (for form submissions).
+    This is the Contentful-primary approach matching propnz.
+    """
+    try:
+        client = get_management_client()
+        if not client:
+            logger.error("Contentful CMA token not configured")
+            return None
+        
+        space = client.spaces().find(CONTENTFUL_SPACE_ID)
+        environment = space.environments().find(CONTENTFUL_ENVIRONMENT)
+        
+        # Generate slug
+        import re
+        slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-') + '-' + str(int(time.time()))
+        
+        # Geocode location
+        geo_location = geocode_location(city or location)
+        
+        # Build rich text description
+        rich_description = build_rich_text(description)
+        
+        # Prepare fields
+        fields = {
+            'title': {'en-US': title},
+            'slug': {'en-US': slug},
+            'propertyType': {'en-US': property_type},
+            'location': {'en-US': geo_location},
+            'price': {'en-US': price},
+            'city': {'en-US': city or location},
+            'description': {'en-US': rich_description},
+        }
+        
+        if carpet_area:
+            fields['carpetArea'] = {'en-US': carpet_area}
+        if floor_number:
+            fields['floorNumber'] = {'en-US': floor_number}
+        if total_floors:
+            fields['totalNoOfFloors'] = {'en-US': total_floors}
+        if possession_date:
+            fields['pocessionByDate'] = {'en-US': possession_date}
+        if loan_approved_by:
+            fields['loanApprovedBy'] = {'en-US': loan_approved_by}
+        
+        # Upload image if provided
+        if image:
+            asset_id = upload_image_to_contentful(image, title)
+            if asset_id:
+                fields['image'] = {'en-US': {'sys': {'type': 'Link', 'linkType': 'Asset', 'id': asset_id}}}
+        
+        # Link developer if provided
+        if developer_id:
+            fields['developer'] = {'en-US': {'sys': {'type': 'Link', 'linkType': 'Entry', 'id': developer_id}}}
+        
+        # Create and publish entry
+        entry = environment.entries().create(None, {'content_type_id': 'property', 'fields': fields})
+        entry.publish()
+        
+        logger.info(f"Submitted property to Contentful: {entry.id} - {title}")
+        return entry.id
+        
+    except Exception as e:
+        logger.error(f"Failed to submit property to Contentful: {e}")
+        return None

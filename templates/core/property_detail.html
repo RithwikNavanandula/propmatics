@@ -3,29 +3,6 @@
 {% block title %}{{ property.title }} - Propmatics{% endblock %}
 {% block description %}{{ property.description|truncatewords:30 }}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .gallery-main {
-        transition: opacity 0.3s ease;
-    }
-
-    .gallery-thumb {
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .gallery-thumb:hover,
-    .gallery-thumb.active {
-        border-color: #16a34a;
-        opacity: 1;
-    }
-
-    .gallery-thumb:not(.active) {
-        opacity: 0.7;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-8">
     <!-- Breadcrumb -->
@@ -38,87 +15,21 @@
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left Column - Gallery -->
+        <!-- Left Column - Main Content -->
         <div class="lg:col-span-2">
-            <!-- Main Image Gallery -->
+            <!-- Main Image -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <!-- Main Display -->
                 <div class="relative h-80 md:h-[450px] bg-gray-200">
-                    {% if property.image %}
-                    <img id="main-gallery-image" src="{{ property.image.url }}" alt="{{ property.title }}"
-                        class="gallery-main w-full h-full object-cover">
+                    {% if property.image_url %}
+                    <img src="{{ property.image_url }}" alt="{{ property.title }}" class="w-full h-full object-cover">
                     {% else %}
                     <div
                         class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100">
                         <i class="fas fa-building text-6xl text-emerald-300"></i>
                     </div>
                     {% endif %}
-                    <!-- Badge -->
-                    {% if property.featured %}
-                    <span
-                        class="absolute top-4 left-4 bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold">
-                        ⭐ Featured Property
-                    </span>
-                    {% endif %}
-                </div>
-
-                <!-- Thumbnail Gallery -->
-                {% if property.image or property.images.exists %}
-                <div class="p-4 bg-gray-50 border-t">
-                    <div class="flex gap-3 overflow-x-auto pb-2" id="gallery-thumbnails">
-                        {% if property.image %}
-                        <div class="gallery-thumb active flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 border-emerald-500"
-                            onclick="changeMainImage('{{ property.image.url }}', this)">
-                            <img src="{{ property.image.url }}" alt="Main" class="w-full h-full object-cover">
-                        </div>
-                        {% endif %}
-                        {% for img in property.images.all %}
-                        <div class="gallery-thumb flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent"
-                            onclick="changeMainImage('{{ img.image.url }}', this)">
-                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:'Property Image' }}"
-                                class="w-full h-full object-cover">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2">
-                        <i class="fas fa-images mr-1"></i>
-                        {{ property.images.count|add:1 }} photo{% if property.images.count %}s{% endif %}
-                    </p>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Videos Section -->
-            {% if property.video or property.videos.exists %}
-            <div class="mt-8 bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div class="p-6 border-b bg-gray-50">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-video text-emerald-600 mr-3"></i>
-                        Property Videos
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {% if property.video %}
-                        <div>
-                            <video controls class="w-full rounded-lg shadow-md">
-                                <source src="{{ property.video.url }}" type="video/mp4">
-                            </video>
-                            <p class="text-sm text-gray-500 mt-2">Main Video Tour</p>
-                        </div>
-                        {% endif %}
-                        {% for vid in property.videos.all %}
-                        <div>
-                            <video controls class="w-full rounded-lg shadow-md">
-                                <source src="{{ vid.video.url }}" type="video/mp4">
-                            </video>
-                            <p class="text-sm text-gray-500 mt-2">{{ vid.title|default:"Property Video" }}</p>
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Description -->
             {% if property.description %}
@@ -143,7 +54,7 @@
                     <p class="text-sm opacity-90">Price</p>
                     <p class="text-3xl font-bold">₹{{ property.price|floatformat:0 }}</p>
                     <span class="inline-block bg-white/20 px-3 py-1 rounded-full text-sm mt-2">
-                        {{ property.get_property_type_display }}
+                        {{ property.property_type|title }}
                     </span>
                 </div>
 
@@ -151,7 +62,7 @@
                     <h1 class="text-xl font-bold text-gray-800 mb-3">{{ property.title }}</h1>
                     <p class="text-gray-500 flex items-center mb-4">
                         <i class="fas fa-map-marker-alt mr-2 text-emerald-500"></i>
-                        {{ property.city }}{% if property.location %}, {{ property.location }}{% endif %}
+                        {{ property.city }}
                     </p>
 
                     <!-- Quick Details -->
@@ -174,14 +85,14 @@
                         <div class="bg-gray-50 p-3 rounded-lg">
                             <i class="fas fa-calendar text-emerald-600 text-sm"></i>
                             <p class="text-xs text-gray-500 mt-1">Possession</p>
-                            <p class="font-semibold text-sm">{{ property.possession_date|date:"M Y" }}</p>
+                            <p class="font-semibold text-sm">{{ property.possession_date }}</p>
                         </div>
                         {% endif %}
                         {% if property.loan_approved_by %}
                         <div class="bg-gray-50 p-3 rounded-lg">
                             <i class="fas fa-university text-emerald-600 text-sm"></i>
                             <p class="text-xs text-gray-500 mt-1">Loan</p>
-                            <p class="font-semibold text-sm">{{ property.get_loan_approved_by_display }}</p>
+                            <p class="font-semibold text-sm">{{ property.loan_approved_by }}</p>
                         </div>
                         {% endif %}
                     </div>
@@ -215,11 +126,11 @@
         <h2 class="text-2xl font-bold mb-6 text-gray-800">Similar Properties</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {% for prop in related_properties %}
-            <a href="{{ prop.get_absolute_url }}"
+            <a href="{% url 'property_detail' prop.slug %}"
                 class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group">
                 <div class="h-36 bg-gray-200 overflow-hidden">
-                    {% if prop.image %}
-                    <img src="{{ prop.image.url }}" alt="{{ prop.title }}"
+                    {% if prop.image_url %}
+                    <img src="{{ prop.image_url }}" alt="{{ prop.title }}"
                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                     {% endif %}
                 </div>
@@ -234,26 +145,4 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    function changeMainImage(imageUrl, element) {
-        // Update main image
-        const mainImage = document.getElementById('main-gallery-image');
-        if (mainImage) {
-            mainImage.src = imageUrl;
-        }
-
-        // Update active states
-        document.querySelectorAll('.gallery-thumb').forEach(thumb => {
-            thumb.classList.remove('active');
-            thumb.classList.remove('border-emerald-500');
-            thumb.classList.add('border-transparent');
-        });
-        element.classList.add('active');
-        element.classList.remove('border-transparent');
-        element.classList.add('border-emerald-500');
-    }
-</script>
 {% endblock %}
