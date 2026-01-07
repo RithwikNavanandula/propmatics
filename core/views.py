@@ -79,6 +79,17 @@ def post_property(request):
             property.is_published = False  # Needs admin approval
             property.save()
             
+            # Sync to Contentful (background task)
+            try:
+                from .contentful_service import sync_property_to_contentful
+                contentful_id = sync_property_to_contentful(property)
+                if contentful_id:
+                    messages.info(request, f'Property also synced to Contentful.')
+            except Exception as e:
+                # Log but don't fail the request
+                import logging
+                logging.getLogger(__name__).warning(f"Contentful sync failed: {e}")
+            
             # Send email notification
             try:
                 send_mail(

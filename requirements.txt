@@ -6,3 +6,5 @@ psycopg2-binary==2.9.10
 pillow==12.1.0
 python-dotenv==1.2.1
 django-jazzmin==3.0.1
+contentful-management==2.15.1
+requests==2.32.4
